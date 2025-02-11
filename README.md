@@ -67,6 +67,34 @@ export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 4. 添加了 .bazelversion 和 .python-version 限制工具版本
 5. 生成compile_command.json
 
+## 5. debug
+
+1. build --config=debug AND cgdb xxx
+2. 参考这个launch.json，使用lldb调
+```json
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "DebugBazelBin",
+            "program": "bazel-bin/examples/cyber/talker",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "LD_LIBRARY_PATH": "/usr/local/fast-rtps/lib:/home/shuaikai/.pyenv/versions/3.9.15/lib"
+            },
+            "sourceMap": {
+                "/proc/self/cwd": "${workspaceFolder}" // 必须要，否则找不到源文件位置
+            }
+        }
+    ]
+}
+
+```
+
 ---
 
 >[!info]

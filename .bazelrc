@@ -1,2 +1,10 @@
 try-import %workspace%/tools/bazel.rc
 try-import %workspace%/user.bazelrc
+
+# can move to user.bazelrc
+
+build:debug --compilation_mode=dbg
+build:debug --copt=-g
+build:debug --copt=-O0
+
+build --config=debug

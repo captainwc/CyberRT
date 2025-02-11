@@ -1,3 +1,80 @@
+# How to build this project
+
+## 1. 编译安装 fastrtps
+
+```bash
+cd tools/install && ./install_prereqs.sh
+```
+
+这会下载编译 `fastrtps v1.5.0` 并安装到 `/usr/local/fast-rtps`
+
+环境变量的配置参见下文
+
+
+## 2. 确保 python 版本
+
+这项目有点老，对python版本有要求，高了低了都不行（受制于protobuf的编译，用到的CAPI）
+经过尝试，推荐`3.9.15`（既可以通过protobuf的编译，又可以通过生成compile_commands.josn的编译）
+
+这里采用`pyenv`安装
+
+### 2.1 安装pyenv
+```bash
+    #(1) 安装依赖
+    sudo apt update && sudo apt install -y --no-install-recommends \
+    make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
+    libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev git
+
+    #(2) 安装 pyenv
+    curl https://pyenv.run | bash
+    ## 然后会让你往bashrc中写入一些东西，照做
+
+    #(3) 安装python3.8.12
+    pyenv install 3.9.15
+    ## 本项目指定了 .python-version 文件，因此进入文件夹后会自动切换
+```
+
+### 2.2 配置python3.9环境
+
+直接参见下面关于环境变量的配置
+
+## 3 所有需要的环境变量
+
+已经写入 setup.bash， 直接source即可
+
+```bash
+#(1) bazel 需要指定python工具链
+export PYTHON_BIN_PATH=$(pyenv prefix)/bin/python3.9
+export PYTHON_LIB_PATH=$(pyenv prefix)/lib/python3.9
+
+#(2) 指定编译、运行时的链接库查找位置，主要是 -lpython3.9 和 -lfastrtps
+export LIBRARY_PATH="/usr/local/fast-rtps/lib:$(pyenv prefix)/lib":${LIBRARY_PATH}
+export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
+```
+
+>[!warning]
+这里修改了python库的链接位置，所以如果有别的项目也需要链接python库的话，记得新开一个终端
+
+## 4 报错
+1. 如果设置了python lib的path之后仍然报错：/usr/bin/ld.gold: error: cannot find -lpython3.8
+那么直接去修改 `~/.cache/bazel/.../external/local_config_python/_python3/BUILD:5:linkopts`，直接在这里加上 "-L/home/shuaikai/.pyenv/versions/3.9.15/lib",
+
+## 注：对原项目的修改
+1. tools/install/install_prereqs.sh 中 fastrtps v1.5.0 分支丢失，通过 `git ls remote`找到对应的tag修改克隆连接
+2. setup.bash 中统统改为用 export 设置环境变量
+3. zlib有个链接失效了，改成了 https://www.zlib.net/fossils/zlib-1.2.11.tar.gz
+4. 添加了 .bazelversion 和 .python-version 限制工具版本
+5. 生成compile_command.json
+
+---
+
+>[!info]
+以下为原项目的 README
+
+---
+
+
 # Introduction
 
 Apollo Cyber RT is an open source, high performance runtime framework designed

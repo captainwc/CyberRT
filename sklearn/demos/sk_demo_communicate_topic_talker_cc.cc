@@ -10,9 +10,6 @@
 #include "cyber/init.h"
 #include "cyber/state.h"
 
-#undef SK_LOG_FOR_DEBUG
-#define SK_LOG_FOR_DEBUG 0
-
 using sklearn::proto::Person;
 
 auto GenPerson() -> std::shared_ptr<Person> {

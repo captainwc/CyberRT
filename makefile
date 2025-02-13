@@ -1,7 +1,15 @@
-.PHONY: setup debug find-exe refresh-commands cyber test-all build-all clean clean-all
+.PHONY: setup run debug find-exe refresh-commands cyber test-all build-all clean clean-all
 
 setup:
 	@echo "You should execute \"source setup.bash\" by yourself"
+
+run:
+	@exe=$$(fd . bazel-bin -uu | fzf); \
+	if [ -n "$$exe" ]; then \
+		./$$exe; \
+	else \
+		echo "No executable selected."; \
+	fi;
 
 debug:
 	@exe=$$(fd . bazel-bin -uu | fzf); \

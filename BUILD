@@ -14,6 +14,5 @@ refresh_compile_commands(
     targets = {
         #   "//:my_output_1": "--important_flag1 --important_flag2=true",
         "//...": "",
-        "//examples/cyber:talker": "",
     },
 )

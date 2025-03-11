@@ -10,15 +10,32 @@ cd tools/install && ./install_prereqs.sh
 
 环境变量的配置参见下文
 
-
 ## 2. 确保 python 版本
 
-这项目有点老，对python版本有要求，高了低了都不行（受制于protobuf的编译，用到的CAPI）
+这项目有点老，对python版本有要求，高了低了都不行（受制于protobuf的编译，用到的CAPI， 3.10开始有的用到的老特性不支持了）
 经过尝试，推荐`3.9.15`（既可以通过protobuf的编译，又可以通过生成compile_commands.josn的编译）
 
-这里采用`pyenv`安装
+可以选择pyenv或者uv
 
-### 2.1 安装pyenv
+### 2.1 安装uv
+
+```bash
+#（1）安装uv(完了之后会让你把 ~/.local/bin添加到环境变量)
+curl -LsSf <https://astral.sh/uv/install.sh> | sh
+
+# (2) 安装python3.9
+uv python install 3.9 
+
+# (3) 设置环境
+uv venv --python 3.9
+source .venv/bin/activate
+
+# (4) 修改source.bash中的python位置为你的python路径
+uv python list
+```
+
+### 2.2 安装pyenv
+
 ```bash
     #(1) 安装依赖
     sudo apt update && sudo apt install -y --no-install-recommends \
@@ -45,11 +62,14 @@ cd tools/install && ./install_prereqs.sh
 
 ```bash
 #(1) bazel 需要指定python工具链
+export PYTHON_BIN_PATH=~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/bin/python3.9
+export PYTHON_LIB_PATH=~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib
+# OR
 export PYTHON_BIN_PATH=$(pyenv prefix)/bin/python3.9
 export PYTHON_LIB_PATH=$(pyenv prefix)/lib/python3.9
 
 #(2) 指定编译、运行时的链接库查找位置，主要是 -lpython3.9 和 -lfastrtps
-export LIBRARY_PATH="/usr/local/fast-rtps/lib:$(pyenv prefix)/lib":${LIBRARY_PATH}
+export LIBRARY_PATH="/usr/local/fast-rtps/lib:${PYTHON_LIB_PATH}":${LIBRARY_PATH}
 export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 ```
 
@@ -57,13 +77,21 @@ export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 这里修改了python库的链接位置，所以如果有别的项目也需要链接python库的话，记得新开一个终端
 
 ## 4 报错
-1. 如果设置了python lib的path之后仍然报错：/usr/bin/ld.gold: error: cannot find -lpython3.8
+
+1. 下载 `zlib-1.2.11.tar.gz` 的时候出错，因为那个链接失效了，**出现报错后**直接执行以下命令而后重新build即可
+
+```bash
+rg -l "https://zlib.net/zlib-1.2.11.tar.gz" ~/.cache/bazel | xargs sed -i 's|https://zlib.net/zlib-1.2.11.tar.gz|https://www.zlib.net/fossils/zlib-1.2.11.tar.gz|g'
+```
+
+2. 如果设置了python lib的path之后仍然报错：/usr/bin/ld.gold: error: cannot find -lpython3.8
 那么直接去修改 `~/.cache/bazel/.../external/local_config_python/_python3/BUILD:5:linkopts`，直接在这里加上 "-L/home/shuaikai/.pyenv/versions/3.9.15/lib",
 
 ## 注：对原项目的修改
+
 1. tools/install/install_prereqs.sh 中 fastrtps v1.5.0 分支丢失，通过 `git ls remote`找到对应的tag修改克隆连接
 2. setup.bash 中统统改为用 export 设置环境变量
-3. zlib有个链接失效了，改成了 https://www.zlib.net/fossils/zlib-1.2.11.tar.gz
+3. zlib链接失效，需要改成 <https://www.zlib.net/fossils/zlib-1.2.11.tar.gz>
 4. 添加了 .bazelversion 和 .python-version 限制工具版本
 5. 生成compile_command.json
 
@@ -71,6 +99,7 @@ export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 1. build --config=debug AND cgdb xxx
 2. 参考这个launch.json，使用lldb调
+
 ```json
 
 {
@@ -101,7 +130,6 @@ export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 以下为原项目的 README
 
 ---
-
 
 # Introduction
 

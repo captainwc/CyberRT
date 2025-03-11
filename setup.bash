@@ -14,10 +14,10 @@ export PATH=${BAZEL_BIN_DIR}/cyber/mainboard:$PATH
 export PATH=${BAZEL_BIN_DIR}/cyber/tools/cyber_recorder:$PATH
 export PATH=${BAZEL_BIN_DIR}/cyber/tools/cyber_monitor:$PATH
 
-export PYTHON_BIN_PATH=$(pyenv prefix)/bin/python3.9
-export PYTHON_LIB_PATH=$(pyenv prefix)/lib/python3.9
+export PYTHON_BIN_PATH=~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/bin/python3.9
+export PYTHON_LIB_PATH=~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib
 
-export LIBRARY_PATH=/usr/local/fast-rtps/lib:$(pyenv prefix)/lib:${LIBRARY_PATH}
+export LIBRARY_PATH=/usr/local/fast-rtps/lib:${PYTHON_LIB_PATH}:${LIBRARY_PATH}
 export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 export PYTHONPATH=${BAZEL_BIN_DIR}:$PYTHONPATH

@@ -71,10 +71,18 @@ export PYTHON_LIB_PATH=$(pyenv prefix)/lib/python3.9
 #(2) 指定编译、运行时的链接库查找位置，主要是 -lpython3.9 和 -lfastrtps
 export LIBRARY_PATH="/usr/local/fast-rtps/lib:${PYTHON_LIB_PATH}":${LIBRARY_PATH}
 export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
+```
 
-#(注) 也可以将fast-rtps的库添加到默认位置，这样运行更方便（比如可以直接在vscode里面点击run运行，而不是报找不到库的错）
+如果不想每次都要手动source，也有办法：
+```
+#(1) 也可以将fast-rtps的库添加到默认位置，这样运行更方便（比如可以直接在vscode里面点击run运行，而不是报找不到库的错）
 ln -s /usr/local/fast-rtps/lib/libfastrtps.so.1 /lib/x86_64-linux-gnu/libfastrtps.so.1
 ln -s /usr/local/fast-rtps/lib/libfast /lib/x86_64-linux-gnu/libfastcdr.so.1
+
+#(2) 直接在/etc/profile中加载setup.bash，这样无论启动何种shell（vscode中默认的or bash）都不用手动加载了（运行不了python用例的试试这个）
+if [ -f /workspace/CyberRT/setup.bash ]; then
+	. /workspace/CyberRT/setup.bash
+fi
 
 ```
 

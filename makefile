@@ -14,7 +14,7 @@ run:
 debug:
 	@exe=$$(fd . bazel-bin -uu | fzf); \
 	if [ -n "$$exe" ]; then \
-		cgdb "$$exe"; \
+		cgdb -q "$$exe"; \
 	else \
 		echo "No executable selected."; \
 	fi;

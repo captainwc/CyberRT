@@ -78,11 +78,17 @@ export LD_LIBRARY_PATH=${LIBRARY_PATH}:${LD_LIBRARY_PATH}
 #(1) 也可以将fast-rtps的库添加到默认位置，这样运行更方便（比如可以直接在vscode里面点击run运行，而不是报找不到库的错）
 ln -s /usr/local/fast-rtps/lib/libfastrtps.so.1 /lib/x86_64-linux-gnu/libfastrtps.so.1
 ln -s /usr/local/fast-rtps/lib/libfast /lib/x86_64-linux-gnu/libfastcdr.so.1
+ln -s ~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib/libpython3.9.so.1.0 /lib/x86_64-linux-gnu/libpython3.9
+.so
+ln -s ~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib/libpython3.9.so.1.0 /lib/x86_64-linux-gnu/libpython3.9
+.so.1
 
 #(2) 直接在/etc/profile中加载setup.bash，这样无论启动何种shell（vscode中默认的or bash）都不用手动加载了（运行不了python用例的试试这个）
 if [ -f /workspace/CyberRT/setup.bash ]; then
 	. /workspace/CyberRT/setup.bash
 fi
+
+source /workspace/CyberRT/.venv/bin/activate
 
 ```
 

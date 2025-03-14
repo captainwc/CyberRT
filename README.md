@@ -1,5 +1,11 @@
 # How to build this project
 
+## 0. 使用docker
+
+[cyber-dev's DOCKERFILE](https://raw.githubusercontent.com/captainwc/CyberRT/refs/heads/master/dockerfile)
+
+基础镜像是 [dev-base](https://raw.githubusercontent.com/captainwc/.dotfiles/refs/heads/main/scripts/docker/dockerfile-dev-base), 其实就是 ubuntu22.04 带上了一些必须的和好用的工具，如g++、git、bazel、tmux、uv等等，也可以自己装
+
 ## 1. 编译安装 fastrtps
 
 ```bash
@@ -83,7 +89,7 @@ ln -s ~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib/libpython3.9.
 ln -s ~/.local/share/uv/python/cpython-3.9.21-linux-x86_64-gnu/lib/libpython3.9.so.1.0 /lib/x86_64-linux-gnu/libpython3.9
 .so.1
 
-#(2) 直接在/etc/profile中加载setup.bash，这样无论启动何种shell（vscode中默认的or bash）都不用手动加载了（运行不了python用例的试试这个）
+#(2) 直接在~/.bashrc中加载setup.bash，这样无论启动何种shell（vscode中默认的or bash）都不用手动加载了（运行不了python用例的试试这个）
 if [ -f /workspace/CyberRT/setup.bash ]; then
 	. /workspace/CyberRT/setup.bash
 fi
